@@ -1,0 +1,71 @@
+stages:
+  - deploy
+
+deploy-dev:
+  stage: deploy
+  image: registry.gitlab.com/redmic-project/docker/docker-deploy
+  variables:
+    DOCKER_DRIVER: overlay2
+    SSH_REMOTE: ${DEV_SSH_REMOTE}
+    DEPLOY_DIR_NAME: swarmprom
+    STATUS_CHECK_DELAY: 60
+    STACK: metric
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    ADMIN_USER: ${DEV_ADMIN_USER}
+    ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
+  services:
+    - docker:dind
+  script:
+    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+  environment:
+    name: dev
+  only:
+    - dev
+  when: manual
+
+deploy-supporting-branch:
+  stage: deploy
+  image: registry.gitlab.com/redmic-project/docker/docker-deploy
+  variables:
+    DOCKER_DRIVER: overlay2
+    SSH_REMOTE: ${DEV_SSH_REMOTE}
+    DEPLOY_DIR_NAME: swarmprom
+    STATUS_CHECK_DELAY: 60
+    STACK: metric
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    ADMIN_USER: ${DEV_ADMIN_USER}
+    ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
+  services:
+    - docker:dind
+  script:
+    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+  environment:
+    name: dev
+  only:
+    - branches
+  except:
+    - master
+    - dev
+  when: manual
+
+deploy-pro:
+  stage: deploy
+  image: registry.gitlab.com/redmic-project/docker/docker-deploy
+  variables:
+    DOCKER_DRIVER: overlay2
+    SSH_REMOTE: ${PRO_SSH_REMOTE}
+    DEPLOY_DIR_NAME: swarmprom
+    STATUS_CHECK_DELAY: 60
+    STACK: metric
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    ADMIN_USER: ${PRO_ADMIN_USER}
+    ADMIN_PASSWORD: ${PRO_ADMIN_PASSWORD}
+  services:
+    - docker:dind
+  script:
+    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+  environment:
+    name: pro
+  only:
+    - master
+  when: manual
