@@ -5,6 +5,7 @@ deploy-dev:
   stage: deploy
   image: registry.gitlab.com/redmic-project/docker/docker-deploy
   variables:
+    GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${DEV_SSH_REMOTE}
     DEPLOY_DIR_NAME: swarmprom
@@ -27,6 +28,7 @@ deploy-supporting-branch:
   stage: deploy
   image: registry.gitlab.com/redmic-project/docker/docker-deploy
   variables:
+    GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${DEV_SSH_REMOTE}
     DEPLOY_DIR_NAME: swarmprom
@@ -52,6 +54,7 @@ deploy-pro:
   stage: deploy
   image: registry.gitlab.com/redmic-project/docker/docker-deploy
   variables:
+    GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${PRO_SSH_REMOTE}
     DEPLOY_DIR_NAME: swarmprom
