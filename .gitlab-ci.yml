@@ -8,16 +8,21 @@ deploy-dev:
     GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${DEV_SSH_REMOTE}
-    DEPLOY_DIR_NAME: swarmprom
+    DEPLOY_DIR_NAME: '.'
     STATUS_CHECK_DELAY: 60
     STACK: metric
-    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus
     ADMIN_USER: ${DEV_ADMIN_USER}
     ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
+    UI_AUTH: ${DEV_UI_AUTH}
+    PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
   services:
     - docker:dind
   script:
-    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    - create-nets.sh metric-net
+    - >
+      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} UI_AUTH=${UI_AUTH}
+      PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: dev
   only:
@@ -31,16 +36,21 @@ deploy-supporting-branch:
     GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${DEV_SSH_REMOTE}
-    DEPLOY_DIR_NAME: swarmprom
+    DEPLOY_DIR_NAME: '.'
     STATUS_CHECK_DELAY: 60
     STACK: metric
-    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus
     ADMIN_USER: ${DEV_ADMIN_USER}
     ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
+    UI_AUTH: ${DEV_UI_AUTH}
+    PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
   services:
     - docker:dind
   script:
-    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    - create-nets.sh metric-net
+    - >
+      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} UI_AUTH=${UI_AUTH}
+      PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: dev
   only:
@@ -57,16 +67,21 @@ deploy-pro:
     GIT_SUBMODULE_STRATEGY: normal
     DOCKER_DRIVER: overlay2
     SSH_REMOTE: ${PRO_SSH_REMOTE}
-    DEPLOY_DIR_NAME: swarmprom
+    DEPLOY_DIR_NAME: '.'
     STATUS_CHECK_DELAY: 60
     STACK: metric
-    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus metric_caddy
+    SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus
     ADMIN_USER: ${PRO_ADMIN_USER}
     ADMIN_PASSWORD: ${PRO_ADMIN_PASSWORD}
+    UI_AUTH: ${PRO_UI_AUTH}
+    PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
   services:
     - docker:dind
   script:
-    - deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    - create-nets.sh metric-net
+    - >
+      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} UI_AUTH=${UI_AUTH}
+      PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: pro
   only:
