@@ -213,7 +213,7 @@ services:
         traefik.backend: prometheus
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
       restart_policy:
         condition: on-failure
         delay: 1m
