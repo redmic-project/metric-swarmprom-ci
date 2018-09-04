@@ -231,6 +231,14 @@ networks:
   traefik-net:
     external: true
 
+volumes:
+  prometheus:
+    name: prometheus-vol
+  grafana:
+    name: grafana-vol
+  alertmanager:
+    name: alertmanager-vol
+
 configs:
   dockerd_config:
     file: ./swarmprom/dockerd-exporter/Caddyfile
