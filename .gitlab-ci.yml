@@ -18,6 +18,7 @@ deploy-dev:
   stage: deploy
   variables:
     SSH_REMOTE: ${DEV_SSH_REMOTE}
+    COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.dev.yml
     ADMIN_USER: ${DEV_ADMIN_USER}
     ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
@@ -26,8 +27,8 @@ deploy-dev:
   script:
     - create-nets.sh metric-net
     - >
-      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP}
-      UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: dev
   only:
@@ -38,6 +39,7 @@ deploy-supporting-branch:
   stage: deploy
   variables:
     SSH_REMOTE: ${DEV_SSH_REMOTE}
+    COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.dev.yml
     ADMIN_USER: ${DEV_ADMIN_USER}
     ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD}
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
@@ -46,8 +48,8 @@ deploy-supporting-branch:
   script:
     - create-nets.sh metric-net
     - >
-      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP}
-      UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: dev
   only:
@@ -61,6 +63,7 @@ deploy-pro:
   stage: deploy
   variables:
     SSH_REMOTE: ${PRO_SSH_REMOTE}
+    COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.prod.yml
     ADMIN_USER: ${PRO_ADMIN_USER}
     ADMIN_PASSWORD: ${PRO_ADMIN_PASSWORD}
     DOCKER_GWBRIDGE_IP: ${PRO_DOCKER_GWBRIDGE_IP}
@@ -69,8 +72,8 @@ deploy-pro:
   script:
     - create-nets.sh metric-net
     - >
-      deploy.sh ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD} DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP}
-      UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
   environment:
     name: pro
   only:
