@@ -64,7 +64,6 @@ services:
         constraints:
           - node.role == manager
       restart_policy:
-        condition: on-failure
         delay: 1m
         window: 3m
       resources:
