@@ -140,14 +140,16 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1G
         reservations:
           memory: 128M
 
 volumes:
   prometheus:
     name: prometheus-vol
+
   grafana:
     name: grafana-vol
+
   alertmanager:
     name: alertmanager-vol
