@@ -93,7 +93,8 @@ services:
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=24h'
+      - '--storage.tsdb.retention=30d'
+      - '--storage.local.target-heap-size=536870912'
     networks:
       - metric-net
       - traefik-net
@@ -108,13 +109,16 @@ services:
 networks:
   metric-net:
     external: true
+
   traefik-net:
     external: true
 
 configs:
   dockerd_config:
     file: ./swarmprom/dockerd-exporter/Caddyfile
+
   node_rules:
     file: ./swarmprom/prometheus/rules/swarm_node.rules.yml
+
   task_rules:
     file: ./swarmprom/prometheus/rules/swarm_task.rules.yml
