@@ -94,7 +94,6 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention=30d'
-      - '--storage.local.target-heap-size=536870912'
     networks:
       - metric-net
       - traefik-net
