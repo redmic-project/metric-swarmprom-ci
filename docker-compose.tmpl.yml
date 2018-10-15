@@ -97,7 +97,7 @@ services:
     networks:
       - metric-net
     volumes:
-      - pushgateway-vol:/db
+      - pushgateway:/db
 
   prometheus:
     image: stefanprodan/swarmprom-prometheus:v2.2.0-rc.0
