@@ -105,6 +105,23 @@ services:
         reservations:
           memory: 64M
 
+  pushgateway:
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
+
   prometheus:
     deploy:
       mode: replicated
@@ -136,6 +153,9 @@ volumes:
       backing: relocatable
       size: 5
       ebstype: gp2
+
+  pushgateway:
+    name: pushgateway-vol
 
   grafana:
     name: grafana-vol

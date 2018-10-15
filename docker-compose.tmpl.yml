@@ -90,6 +90,15 @@ services:
       - /:/rootfs:ro
       - /etc/hostname:/etc/nodename
 
+  pushgateway:
+    image: prom/pushgateway
+    command:
+      - '--persistence.file=/db/metrics'
+    networks:
+      - metric-net
+    volumes:
+      - pushgateway-vol:/db
+
   prometheus:
     image: stefanprodan/swarmprom-prometheus:v2.2.0-rc.0
     command:
