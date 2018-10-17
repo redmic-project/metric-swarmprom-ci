@@ -96,6 +96,7 @@ services:
       - '--persistence.file=/db/metrics'
     networks:
       - metric-net
+      - traefik-net
     volumes:
       - pushgateway:/db
 
