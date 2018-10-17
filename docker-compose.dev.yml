@@ -1,22 +1,5 @@
 version: '3.5'
 
-services:
-  dockerd-exporter:
-
-  cadvisor:
-
-  grafana:
-
-  alertmanager:
-
-  unsee:
-
-  node-exporter:
-
-  pushgateway:
-
-  prometheus:
-
 volumes:
   prometheus:
     name: prometheus-vol

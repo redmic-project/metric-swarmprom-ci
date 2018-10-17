@@ -1,21 +1,11 @@
 version: '3.5'
 
 services:
-  dockerd-exporter:
-
-  cadvisor:
-
   grafana:
     deploy:
       placement:
         constraints:
           - node.role == manager
-
-  alertmanager:
-
-  unsee:
-
-  node-exporter:
 
   pushgateway:
     deploy:
