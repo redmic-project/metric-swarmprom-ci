@@ -219,6 +219,8 @@ services:
     networks:
       - metric-net
       - traefik-net
+    environment:
+      - JOBS
     volumes:
       - prometheus:/prometheus
     configs:
