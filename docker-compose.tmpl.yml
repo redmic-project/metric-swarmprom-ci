@@ -256,4 +256,4 @@ configs:
     file: ./swarmprom/prometheus/rules/swarm_node.rules.yml
 
   task_rules:
-    file: ./swarmprom/prometheus/rules/swarm_task.rules.yml
+    file: ./prometheus/rules/swarm_task.rules.yml
