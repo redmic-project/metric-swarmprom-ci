@@ -28,5 +28,5 @@ groups:
     labels:
       severity: warning
     annotations:
-      description: "'{{ $labels.exported_job }}' database backup was not created."
-      summary: "'{{ $labels.label }}' database backup was not created."
+      description: Error creating backup for '{{ $labels.label }}' database.
+      summary: Error creating backup for '{{ $labels.label }}' database.
