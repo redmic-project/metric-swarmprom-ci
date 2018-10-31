@@ -1,9 +1,5 @@
 version: '3.5'
 
-volumes:
-  prometheus:
-    name: prometheus-vol
-
   pushgateway:
     name: pushgateway-vol
 
