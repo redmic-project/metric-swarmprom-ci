@@ -12,6 +12,17 @@ services:
     configs:
       - source: dockerd_config
         target: /etc/caddy/Caddyfile
+    deploy:
+      mode: global
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   cadvisor:
     image: google/cadvisor
@@ -24,6 +35,17 @@ services:
       - /var/run:/var/run
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      mode: global
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   grafana:
     image: stefanprodan/swarmprom-grafana:5.0.1
@@ -31,6 +53,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel
       #- GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
       #- GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
       #- GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@test.com}
@@ -45,6 +68,23 @@ services:
       - grafana:/var/lib/grafana
       - grafana-etc:/etc/grafana
       - grafana-log:/var/log/grafana
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.port: "3000"
+        traefik.docker.network: traefik-net
+        traefik.frontend.rule: Host:grafana.${PUBLIC_HOSTNAME}
+        traefik.backend: grafana
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   alertmanager:
     image: stefanprodan/swarmprom-alertmanager:v0.14.0
@@ -60,6 +100,27 @@ services:
       - traefik-net
     volumes:
       - alertmanager:/alertmanager
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.port: "9093"
+        traefik.docker.network: traefik-net
+        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.rule: Host:alertmanager.${PUBLIC_HOSTNAME}
+        traefik.backend: alertmanager
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -68,6 +129,24 @@ services:
       - traefik-net
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.port: "8080"
+        traefik.docker.network: traefik-net
+        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.rule: Host:unsee.${PUBLIC_HOSTNAME}
+        traefik.backend: unsee
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   node-exporter:
     image: stefanprodan/swarmprom-node-exporter:v0.15.2
@@ -89,26 +168,45 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
       - /etc/hostname:/etc/nodename
+    deploy:
+      mode: global
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
-  prometheus:
-    image: stefanprodan/swarmprom-prometheus:v2.2.0-rc.0
+  pushgateway:
+    image: prom/pushgateway
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=30d'
-    user: "0:0"
+      - '--persistence.file=/db/metrics'
     networks:
       - metric-net
       - traefik-net
     volumes:
-      - prometheus:/prometheus
-    configs:
-      - source: node_rules
-        target: /etc/prometheus/swarm_node.rules.yml
-      - source: task_rules
-        target: /etc/prometheus/swarm_task.rules.yml
+      - pushgateway:/db
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.port: "9091"
+        traefik.docker.network: traefik-net
+        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.rule: Host:pushgateway.${PUBLIC_HOSTNAME}
+        traefik.backend: pushgateway
+      restart_policy:
+        delay: 1m
+        window: 3m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
 
 networks:
   metric-net:
@@ -120,9 +218,3 @@ networks:
 configs:
   dockerd_config:
     file: ./swarmprom/dockerd-exporter/Caddyfile
-
-  node_rules:
-    file: ./swarmprom/prometheus/rules/swarm_node.rules.yml
-
-  task_rules:
-    file: ./swarmprom/prometheus/rules/swarm_task.rules.yml

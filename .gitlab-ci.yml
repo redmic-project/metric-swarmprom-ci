@@ -1,4 +1,5 @@
 stages:
+  - check_rules
   - deploy
 
 image: registry.gitlab.com/redmic-project/docker/docker-deploy
@@ -14,6 +15,17 @@ variables:
   STACK: metric
   SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_prometheus
 
+check-rule-dev:
+  stage: check_rules
+  script:
+    - >
+      docker run -v $(pwd)/prometheus/rules:/tmp dnanexus/promtool:1.0
+      check rules /tmp/swarm_task.rules.yml
+  environment:
+    name: dev
+  only:
+    - dev
+
 deploy-dev:
   stage: deploy
   variables:
@@ -24,16 +36,34 @@ deploy-dev:
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${DEV_UI_AUTH}
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
+    SLACK_URL: ${SLACK_URL}
+    SLACK_CHANNEL: ${DEV_SLACK_CHANNEL}
+    SLACK_USER: ${SLACK_USER}
   script:
     - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: dev
   only:
     - dev
   when: manual
+
+check-rule-supporting-branch:
+  stage: check_rules
+  script:
+    - >
+      docker run -v $(pwd)/prometheus/rules:/tmp dnanexus/promtool:1.0
+      check rules /tmp/swarm_task.rules.yml
+  environment:
+    name: dev
+  only:
+    - branches
+  except:
+    - master
+    - dev
 
 deploy-supporting-branch:
   stage: deploy
@@ -45,11 +75,15 @@ deploy-supporting-branch:
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${DEV_UI_AUTH}
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
+    SLACK_URL: ${SLACK_URL}
+    SLACK_CHANNEL: ${DEV_SLACK_CHANNEL}
+    SLACK_USER: ${SLACK_USER}
   script:
     - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: dev
   only:
@@ -58,6 +92,18 @@ deploy-supporting-branch:
     - master
     - dev
   when: manual
+
+
+check-rule-pro:
+  stage: check_rules
+  script:
+    - >
+      docker run -v $(pwd)/prometheus/rules:/tmp dnanexus/promtool:1.0
+      check rules /tmp/swarm_task.rules.yml
+  environment:
+    name: pro
+  only:
+    - master
 
 deploy-pro:
   stage: deploy
@@ -69,11 +115,15 @@ deploy-pro:
     DOCKER_GWBRIDGE_IP: ${PRO_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${PRO_UI_AUTH}
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
+    SLACK_URL: ${SLACK_URL}
+    SLACK_CHANNEL: ${PRO_SLACK_CHANNEL}
+    SLACK_USER: ${SLACK_USER}
   script:
     - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: pro
   only:
