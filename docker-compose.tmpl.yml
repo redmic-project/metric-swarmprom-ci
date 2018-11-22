@@ -35,6 +35,12 @@ services:
       - /var/run:/var/run
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    healthcheck:
+      test: wget --spider -S -t 3 http://localhost:8080/metrics
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     deploy:
       mode: global
       restart_policy:
@@ -214,6 +220,22 @@ networks:
 
   traefik-net:
     external: true
+
+volumes:
+  pushgateway:
+    name: pushgateway-vol
+
+  alertmanager:
+    name: alertmanager-vol
+
+  grafana-etc:
+    name: grafana-etc-vol
+
+  grafana-log:
+    name: grafana-log-vol
+
+  dockerd-exporter:
+    name: dockerd-exporter-vol
 
 configs:
   dockerd_config:
