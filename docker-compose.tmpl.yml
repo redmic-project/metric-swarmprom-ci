@@ -54,7 +54,7 @@ services:
           memory: 64M
 
   grafana:
-    image: stefanprodan/swarmprom-grafana:5.0.1
+    image: stefanprodan/swarmprom-grafana:5.3.4
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -155,15 +155,12 @@ services:
           memory: 64M
 
   node-exporter:
-    image: stefanprodan/swarmprom-node-exporter:v0.15.2
+    image: stefanprodan/swarmprom-node-exporter:v0.16.0
     command:
       - '--path.sysfs=/host/sys'
       - '--path.procfs=/host/proc'
       - '--collector.textfile.directory=/etc/node-exporter/'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-      # no collectors are explicitely enabled here, because the defaults are just fine,
-      # see https://github.com/prometheus/node_exporter
-      # disable ipvs collector because it barfs the node-exporter logs full with errors on my centos 7 vm's
       - '--no-collector.ipvs'
     environment:
       - NODE_ID={{.Node.ID}}
@@ -201,7 +198,7 @@ services:
       labels:
         traefik.port: "9091"
         traefik.docker.network: traefik-net
-        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:pushgateway.${PUBLIC_HOSTNAME}
         traefik.backend: pushgateway
       restart_policy:
