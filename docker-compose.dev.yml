@@ -1,19 +1,5 @@
 version: '3.5'
 
-  pushgateway:
-    name: pushgateway-vol
-
+volumes:
   grafana:
     name: grafana-vol
-
-  alertmanager:
-    name: alertmanager-vol
-
-  grafana-etc:
-    name: grafana-etc-vol
-
-  grafana-log:
-    name: grafana-log-vol
-
-  dockerd-exporter:
-    name: dockerd-exporter-vol

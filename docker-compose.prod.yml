@@ -14,9 +14,6 @@ services:
           - node.role == worker
 
 volumes:
-  pushgateway:
-    name: pushgateway-vol
-
   grafana:
     name: grafana-vol
     driver: "cloudstor:aws"
@@ -24,15 +21,3 @@ volumes:
       backing: relocatable
       size: 1
       ebstype: gp2
-
-  alertmanager:
-    name: alertmanager-vol
-
-  grafana-etc:
-    name: grafana-etc-vol
-
-  grafana-log:
-    name: grafana-log-vol
-
-  dockerd-exporter:
-    name: dockerd-exporter-vol

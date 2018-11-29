@@ -35,6 +35,12 @@ services:
       - /var/run:/var/run
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    healthcheck:
+      test: wget --spider -S -t 3 http://localhost:8080/metrics
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     deploy:
       mode: global
       restart_policy:
@@ -43,12 +49,12 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 128M
+          memory: 256M
         reservations:
           memory: 64M
 
   grafana:
-    image: stefanprodan/swarmprom-grafana:5.0.1
+    image: stefanprodan/swarmprom-grafana:5.3.4
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -72,10 +78,10 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.port: "3000"
         traefik.docker.network: traefik-net
         traefik.frontend.rule: Host:grafana.${PUBLIC_HOSTNAME}
         traefik.backend: grafana
+        traefik.port: "3000"
       restart_policy:
         delay: 1m
         window: 3m
@@ -104,11 +110,11 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.port: "9093"
         traefik.docker.network: traefik-net
-        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:alertmanager.${PUBLIC_HOSTNAME}
         traefik.backend: alertmanager
+        traefik.port: "9093"
       placement:
         constraints:
           - node.role == manager
@@ -133,11 +139,11 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.port: "8080"
         traefik.docker.network: traefik-net
-        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:unsee.${PUBLIC_HOSTNAME}
         traefik.backend: unsee
+        traefik.port: "8080"
       restart_policy:
         delay: 1m
         window: 3m
@@ -149,15 +155,12 @@ services:
           memory: 64M
 
   node-exporter:
-    image: stefanprodan/swarmprom-node-exporter:v0.15.2
+    image: stefanprodan/swarmprom-node-exporter:v0.16.0
     command:
       - '--path.sysfs=/host/sys'
       - '--path.procfs=/host/proc'
       - '--collector.textfile.directory=/etc/node-exporter/'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-      # no collectors are explicitely enabled here, because the defaults are just fine,
-      # see https://github.com/prometheus/node_exporter
-      # disable ipvs collector because it barfs the node-exporter logs full with errors on my centos 7 vm's
       - '--no-collector.ipvs'
     environment:
       - NODE_ID={{.Node.ID}}
@@ -193,11 +196,11 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.port: "9091"
         traefik.docker.network: traefik-net
-        traefik.frontend.auth.basic: ${UI_AUTH}
+        traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:pushgateway.${PUBLIC_HOSTNAME}
         traefik.backend: pushgateway
+        traefik.port: "9091"
       restart_policy:
         delay: 1m
         window: 3m
@@ -214,6 +217,22 @@ networks:
 
   traefik-net:
     external: true
+
+volumes:
+  pushgateway:
+    name: pushgateway-vol
+
+  alertmanager:
+    name: alertmanager-vol
+
+  grafana-etc:
+    name: grafana-etc-vol
+
+  grafana-log:
+    name: grafana-log-vol
+
+  dockerd-exporter:
+    name: dockerd-exporter-vol
 
 configs:
   dockerd_config:
