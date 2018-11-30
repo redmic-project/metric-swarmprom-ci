@@ -72,8 +72,6 @@ services:
       - traefik-net
     volumes:
       - grafana:/var/lib/grafana
-      - grafana-etc:/etc/grafana
-      - grafana-log:/var/log/grafana
     deploy:
       mode: replicated
       replicas: 1
@@ -224,12 +222,6 @@ volumes:
 
   alertmanager:
     name: alertmanager-vol
-
-  grafana-etc:
-    name: grafana-etc-vol
-
-  grafana-log:
-    name: grafana-log-vol
 
   dockerd-exporter:
     name: dockerd-exporter-vol
