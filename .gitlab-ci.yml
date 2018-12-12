@@ -13,6 +13,8 @@ variables:
   STATUS_CHECK_DELAY: 60
   STACK: metric
   SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_pushgateway
+  SLACK_URL: ${SLACK_URL}
+  SLACK_USER: ${SLACK_USER}
 
 deploy-supporting-branch-develop:
   stage: deploy
@@ -24,11 +26,8 @@ deploy-supporting-branch-develop:
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${DEV_UI_AUTH}
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
-    SLACK_URL: ${SLACK_URL}
     SLACK_CHANNEL: ${DEV_SLACK_CHANNEL}
-    SLACK_USER: ${SLACK_USER}
   script:
-    - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
@@ -51,11 +50,8 @@ deploy-stable-branch-develop:
     DOCKER_GWBRIDGE_IP: ${DEV_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${DEV_UI_AUTH}
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
-    SLACK_URL: ${SLACK_URL}
     SLACK_CHANNEL: ${DEV_SLACK_CHANNEL}
-    SLACK_USER: ${SLACK_USER}
   script:
-    - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
@@ -76,11 +72,8 @@ deploy-supporting-branch-production:
     DOCKER_GWBRIDGE_IP: ${PRO_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${PRO_UI_AUTH}
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
-    SLACK_URL: ${SLACK_URL}
     SLACK_CHANNEL: ${PRO_SLACK_CHANNEL}
-    SLACK_USER: ${SLACK_USER}
   script:
-    - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
@@ -103,11 +96,8 @@ deploy-stable-branch-production:
     DOCKER_GWBRIDGE_IP: ${PRO_DOCKER_GWBRIDGE_IP}
     UI_AUTH: ${PRO_UI_AUTH}
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
-    SLACK_URL: ${SLACK_URL}
     SLACK_CHANNEL: ${PRO_SLACK_CHANNEL}
-    SLACK_USER: ${SLACK_USER}
   script:
-    - create-nets.sh metric-net
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
       DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
