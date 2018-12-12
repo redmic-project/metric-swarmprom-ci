@@ -2,4 +2,4 @@ version: '3.5'
 
 volumes:
   grafana:
-    name: grafana-vol
+    name: ${GRAFANA_VOL_NAME:-grafana-vol}

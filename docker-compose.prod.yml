@@ -15,8 +15,8 @@ services:
 
 volumes:
   grafana:
-    name: grafana-vol
-    driver: "cloudstor:aws"
+    name: ${GRAFANA_VOL_NAME:-grafana-vol}
+    driver: 'cloudstor:aws'
     driver_opts:
       backing: relocatable
       size: 1

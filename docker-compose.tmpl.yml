@@ -15,14 +15,14 @@ services:
     deploy:
       mode: global
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
           cpus: '0.5'
           memory: 128M
         reservations:
-          memory: 64M
+          memory: 16M
 
   cadvisor:
     image: google/cadvisor
@@ -44,11 +44,11 @@ services:
     deploy:
       mode: global
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
-          cpus: '0.5'
+          cpus: '1'
           memory: 256M
         reservations:
           memory: 64M
@@ -76,16 +76,15 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.docker.network: traefik-net
         traefik.frontend.rule: Host:grafana.${PUBLIC_HOSTNAME}
         traefik.backend: grafana
-        traefik.port: "3000"
+        traefik.port: '3000'
       restart_policy:
         delay: 1m
         window: 3m
       resources:
         limits:
-          cpus: '0.5'
+          cpus: '1'
           memory: 128M
         reservations:
           memory: 64M
@@ -108,23 +107,22 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.docker.network: traefik-net
         traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:alertmanager.${PUBLIC_HOSTNAME}
         traefik.backend: alertmanager
-        traefik.port: "9093"
+        traefik.port: '9093'
       placement:
         constraints:
           - node.role == manager
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
           cpus: '0.5'
           memory: 128M
         reservations:
-          memory: 64M
+          memory: 32M
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -132,25 +130,24 @@ services:
       - metric-net
       - traefik-net
     environment:
-      - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
+      - ALERTMANAGER_URIS=default:http://alertmanager:9093
     deploy:
       mode: replicated
       replicas: 1
       labels:
-        traefik.docker.network: traefik-net
         traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:unsee.${PUBLIC_HOSTNAME}
         traefik.backend: unsee
-        traefik.port: "8080"
+        traefik.port: '8080'
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
           cpus: '0.5'
           memory: 128M
         reservations:
-          memory: 64M
+          memory: 32M
 
   node-exporter:
     image: stefanprodan/swarmprom-node-exporter:v0.16.0
@@ -172,14 +169,14 @@ services:
     deploy:
       mode: global
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
           cpus: '0.5'
           memory: 128M
         reservations:
-          memory: 64M
+          memory: 32M
 
   pushgateway:
     image: prom/pushgateway
@@ -194,38 +191,40 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        traefik.docker.network: traefik-net
         traefik.frontend.auth.basic.users: ${UI_AUTH}
         traefik.frontend.rule: Host:pushgateway.${PUBLIC_HOSTNAME}
         traefik.backend: pushgateway
-        traefik.port: "9091"
+        traefik.port: '9091'
       restart_policy:
-        delay: 1m
-        window: 3m
+        delay: 30s
+        window: 1m
       resources:
         limits:
           cpus: '0.5'
-          memory: 128M
-        reservations:
           memory: 64M
+        reservations:
+          memory: 16M
 
 networks:
   metric-net:
+    name: ${METRIC_NET_NAME:-metric-net}
     external: true
 
   traefik-net:
+    name: ${TRAEFIK_NET_NAME:-traefik-net}
     external: true
 
 volumes:
   pushgateway:
-    name: pushgateway-vol
+    name: ${PUSHGATEWAY_VOL_NAME:-pushgateway-vol}
 
   alertmanager:
-    name: alertmanager-vol
+    name: ${ALERTMANAGER_VOL_NAME:-alertmanager-vol}
 
   dockerd-exporter:
-    name: dockerd-exporter-vol
+    name: ${DOCKERD_EXPORTER_VOL_NAME:-dockerd-exporter-vol}
 
 configs:
   dockerd_config:
+    name: ${DOCKERD_CONFIG_NAME:-dockerd_config}
     file: ./swarmprom/dockerd-exporter/Caddyfile
