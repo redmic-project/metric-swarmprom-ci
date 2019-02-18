@@ -20,7 +20,6 @@ deploy-supporting-branch-develop:
     SSH_REMOTE: ${DEV_SSH_REMOTE}
     COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.dev.yml
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
-    UI_AUTH: ${DEV_UI_AUTH}
   script:
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -40,7 +39,6 @@ deploy-stable-branch-develop:
     SSH_REMOTE: ${DEV_SSH_REMOTE}
     COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.dev.yml
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
-    UI_AUTH: ${DEV_UI_AUTH}
   script:
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -58,7 +56,6 @@ deploy-supporting-branch-production:
     SSH_REMOTE: ${PRO_SSH_REMOTE}
     COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.prod.yml
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
-    UI_AUTH: ${PRO_UI_AUTH}
   script:
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -78,7 +75,6 @@ deploy-stable-branch-production:
     SSH_REMOTE: ${PRO_SSH_REMOTE}
     COMPOSE_FILE: docker-compose.tmpl.yml:docker-compose.prod.yml
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
-    UI_AUTH: ${PRO_UI_AUTH}
   script:
     - >
       deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
