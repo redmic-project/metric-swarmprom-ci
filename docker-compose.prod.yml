@@ -1,6 +1,15 @@
 version: '3.5'
 
 services:
+  cadvisor:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
+
   grafana:
     deploy:
       placement:

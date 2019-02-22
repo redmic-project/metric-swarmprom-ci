@@ -19,10 +19,10 @@ services:
         window: 1m
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: '0.1'
+          memory: 32M
         reservations:
-          memory: 16M
+          memory: 8M
 
   cadvisor:
     image: google/cadvisor
@@ -46,12 +46,6 @@ services:
       restart_policy:
         delay: 30s
         window: 1m
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          memory: 64M
 
   grafana:
     image: stefanprodan/swarmprom-grafana:5.3.4
@@ -119,8 +113,8 @@ services:
         window: 1m
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: '0.1'
+          memory: 64M
         reservations:
           memory: 32M
 
@@ -144,8 +138,8 @@ services:
         window: 1m
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: '0.1'
+          memory: 64M
         reservations:
           memory: 32M
 
@@ -173,8 +167,8 @@ services:
         window: 1m
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: '0.1'
+          memory: 64M
         reservations:
           memory: 32M
 
@@ -200,7 +194,7 @@ services:
         window: 1m
       resources:
         limits:
-          cpus: '0.5'
+          cpus: '0.1'
           memory: 64M
         reservations:
           memory: 16M
