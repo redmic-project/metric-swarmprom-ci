@@ -12,7 +12,7 @@ variables:
   DEPLOY_DIR_NAME: '.'
   STATUS_CHECK_DELAY: 60
   STACK: metric
-  SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_grafana metric_alertmanager metric_unsee metric_node-exporter metric_pushgateway
+  SERVICES_TO_CHECK: metric_dockerd-exporter metric_cadvisor metric_alertmanager metric_unsee metric_node-exporter metric_pushgateway
 
 deploy-supporting-branch-develop:
   stage: deploy
@@ -22,8 +22,7 @@ deploy-supporting-branch-develop:
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
   script:
     - >
-      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
       SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: dev
@@ -41,8 +40,7 @@ deploy-stable-branch-develop:
     PUBLIC_HOSTNAME: ${DEV_PUBLIC_HOSTNAME}
   script:
     - >
-      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
       SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: dev
@@ -58,8 +56,7 @@ deploy-supporting-branch-production:
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
   script:
     - >
-      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
       SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: pro
@@ -77,8 +74,7 @@ deploy-stable-branch-production:
     PUBLIC_HOSTNAME: ${PRO_PUBLIC_HOSTNAME}
   script:
     - >
-      deploy.sh COMPOSE_FILE=${COMPOSE_FILE} ADMIN_USER=${ADMIN_USER} ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
+      deploy.sh DOCKER_GWBRIDGE_IP=${DOCKER_GWBRIDGE_IP} UI_AUTH=${UI_AUTH} PUBLIC_HOSTNAME=${PUBLIC_HOSTNAME}
       SLACK_URL=${SLACK_URL} SLACK_CHANNEL=${SLACK_CHANNEL} SLACK_USER=${SLACK_USER}
   environment:
     name: pro

@@ -1,21 +1,17 @@
 version: '3.5'
 
 services:
-  grafana:
+  cadvisor:
     deploy:
-      placement:
-        constraints:
-          - node.role == manager
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
 
   pushgateway:
     deploy:
       placement:
         constraints:
           - node.role == worker
-
-volumes:
-  grafana:
-    name: ${GRAFANA_VOL_NAME:-grafana-vol}
-    driver: 'cloudstor:aws'
-    driver_opts:
-      backing: shared

@@ -1,5 +1,11 @@
 version: '3.5'
 
-volumes:
-  grafana:
-    name: ${GRAFANA_VOL_NAME:-grafana-vol}
+services:
+  cadvisor:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          memory: 256M
