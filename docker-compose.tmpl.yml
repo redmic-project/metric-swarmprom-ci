@@ -47,42 +47,6 @@ services:
         delay: 30s
         window: 1m
 
-  grafana:
-    image: stefanprodan/swarmprom-grafana:5.3.4
-    environment:
-      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel
-      #- GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
-      #- GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
-      #- GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@test.com}
-      #- GF_SMTP_FROM_NAME=${GF_SMTP_FROM_NAME:-Grafana}
-      #- GF_SMTP_HOST=${GF_SMTP_HOST:-smtp:25}
-      #- GF_SMTP_USER=${GF_SMTP_USER}
-      #- GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
-    networks:
-      - metric-net
-      - traefik-net
-    volumes:
-      - grafana:/var/lib/grafana
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        traefik.frontend.rule: Host:grafana.${PUBLIC_HOSTNAME}
-        traefik.backend: grafana
-        traefik.port: '3000'
-      restart_policy:
-        delay: 1m
-        window: 3m
-      resources:
-        limits:
-          cpus: '1'
-          memory: 128M
-        reservations:
-          memory: 64M
-
   alertmanager:
     image: stefanprodan/swarmprom-alertmanager:v0.14.0
     command:

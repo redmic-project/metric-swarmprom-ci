@@ -9,7 +9,3 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-
-volumes:
-  grafana:
-    name: ${GRAFANA_VOL_NAME:-grafana-vol}

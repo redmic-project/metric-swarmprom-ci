@@ -10,21 +10,8 @@ services:
         reservations:
           memory: 128M
 
-  grafana:
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-
   pushgateway:
     deploy:
       placement:
         constraints:
           - node.role == worker
-
-volumes:
-  grafana:
-    name: ${GRAFANA_VOL_NAME:-grafana-vol}
-    driver: 'cloudstor:aws'
-    driver_opts:
-      backing: shared
